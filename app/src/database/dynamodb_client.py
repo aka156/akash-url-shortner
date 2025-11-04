@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class DynamoDBClient:
     def __init__(self, table_name:str):
         self.dynamodb = boto3.resource("dynamodb")
-        self.table=self.dynamodbTable(table_name)
+        self.table=self.dynamodb.Table(table_name)
         logger.info(f"DynamoDBClient initialized for table: {table_name}")
 
     def get_url_entry_by_short_code(self, short_code:str) -> Optional[Dict[str, Any]]:

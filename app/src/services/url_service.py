@@ -11,7 +11,7 @@ class UrlService:
     def __init__(self,db_client:DynamoDBClient):
         self.db_client = db_client
 
-    def create_short_url(self, original_url:str,phone_number:str):
+    def create_short_url(self, original_url:str,phone_number:str) -> Optional[str]:
         try:
             s=pyshorteners.Shortener()
             short_url = s.tinyurl.short(original_url)
@@ -27,13 +27,13 @@ class UrlService:
         success= self.db_client.create_url_entry(item)
         return short_code if success else None
     
-    def get_original_url(self,short_code:str):
+    def get_original_url(self,short_code:str) -> Optional[str]:
         item = self.db_client.get_url_entry_by_short_code(short_code)
         if item:
             return item.get("original_url")
         return None
     
-    def delete_short_url(self,short_code:str):
+    def delete_short_url(self,short_code:str) -> bool:
         item = self.db_client.get_url_entry_by_short_code(short_code)
         if not item:
             logger.warning(f"delete failed:short code '{short_code}' not found.")
