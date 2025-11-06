@@ -8,6 +8,6 @@ app = FastAPI(title="URL Shortener")
 
 app.include_router(url_controller.router)
 
-# @app.get("/")
-# def root():
-#     return {"status": "ok"}
+@app.get("/")
+def root():
+    return {"status": "ok"}
