@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel, HttpUrl
 from src.services.url_service import UrlService
 from src.models import url_models
 from src.database.dynamodb_client import DynamoDBClient
 from src.utils.settings import settings
+from fastapi.responses import RedirectResponse
 import logging
 
 
@@ -18,7 +19,7 @@ def get_dynamodb_client() -> DynamoDBClient:
       
 
 def get_url_instance(dynamodb_client: DynamoDBClient = Depends(get_dynamodb_client)) -> UrlService:
-        return UrlService(dynamodb_client) 
+      return UrlService(dynamodb_client) 
 
 @router.get("/health")
 def health_check():
@@ -27,7 +28,7 @@ def health_check():
       return {"status": "ok"}
 
 @router.post("/create", response_model=url_models.CreateUrlResponse)
-def create_tiny_url(payload: url_models.CreateUrlRequest, urlservice: UrlService = Depends(get_url_instance)):
+def create_tiny_url( request: Request,payload: url_models.CreateUrlRequest, urlservice: UrlService = Depends(get_url_instance)): #request should be the first parameter
     
     logger.info(f"Received request to shorten URL: {payload.original_url}")
 
@@ -37,9 +38,27 @@ def create_tiny_url(payload: url_models.CreateUrlRequest, urlservice: UrlService
           raise HTTPException(status_code=500, detail="Failed to create short URL.")
     
     logger.info(f"Short URL created successfully: {short_code}")
+    base_url = str(request.base_url)
+    short_url = f"{base_url}{short_code}"
+
+    logger.info(f"Created new mapping: {short_url} for phone: {payload.phone_number}")
     return url_models.CreateUrlResponse(short_code)
 
 #           return "falied to create short_url" #need to raise http exception with status code 500
 #     return url_models.CreateUrlResponse(short_code)
 
-    
+@router.get("/{short_code}")
+def get_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
+      original_url = url_service.get_original_url(short_code)
+      if not original_url:
+         logger.error("Failed to create short URL.")
+         raise HTTPException(status_code=404, detail="URL not found.")
+      return RedirectResponse(url=original_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/fetch/{short_code}")
+def fetch_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
+      original_url = url_service.get_original_url(short_code)
+      if not original_url:
+           logger.error("failed to fetch short_url")
+           raise HTTPException(status_code=404,detail="url not found")
+      return RedirectResponse({"original_url":"http//:doubledigit-solutions.com"})
