@@ -51,14 +51,23 @@ def create_tiny_url( request: Request,payload: url_models.CreateUrlRequest, urls
 def get_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
       original_url = url_service.get_original_url(short_code)
       if not original_url:
-         logger.error("Failed to create short URL.")
+         logger.error("Failed to find original url.")
          raise HTTPException(status_code=404, detail="URL not found.")
-      return RedirectResponse(url=original_url, status_code=status.HTTP_303_SEE_OTHER)
+      return RedirectResponse(url=original_url, status_code=status.HTTP_307_SEE_OTHER)
 
 @router.get("/fetch/{short_code}")
 def fetch_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
       original_url = url_service.get_original_url(short_code)
       if not original_url:
-           logger.error("failed to fetch short_url")
+           logger.error("failed to find original url")
            raise HTTPException(status_code=404,detail="url not found")
-      return RedirectResponse({"original_url":"http//:doubledigit-solutions.com"})
+      return url_models.FetchUrlResponse(original_url) #return with models
+      # return {"original_url": original_url} #return without models
+
+@router.delete("/delete/{short_code}")
+def delete_short_code(request: Request,short_code:str, url_service: UrlService = Depends(get_url_instance)):
+     status = url_service.delete_short_url(short_code) # we are calling delete_short_url function from url_service by passing short_code as input
+     if not status:
+          logger.error("failed to delete short url")
+          raise HTTPException(status_code = 404,detail="URL not found")
+     return {"message":"URL deleted successfully"}

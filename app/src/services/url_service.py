@@ -38,4 +38,5 @@ class UrlService:
         if not item:
             logger.warning(f"delete failed:short code '{short_code}' not found.")
             return False
-        return self.db_client.delete_url_entry(short_code)
+        delete_status = self.db_client.delete_url_entry(short_code)
+        return delete_status
