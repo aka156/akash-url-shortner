@@ -12,7 +12,7 @@ class DynamoDBClient:
 
     def get_url_entry_by_short_code(self, short_code:str) -> Optional[Dict[str, Any]]:
         try:
-            response = self.table.get_item(Key={"short_code":short_code})
+            response = self.table.get_item(Key={"short_code":short_code,})
             return response.get("Item")
         except Exception as e:
             logger.error(f"error getting item from DynamoDB:{e}", exc_info=True)
@@ -29,7 +29,7 @@ class DynamoDBClient:
     
     def delete_url_entry(self, short_code: str) -> bool:
         try:
-            self.table.delete_item(key={"short_code":short_code})
+            self.table.delete_item(Key={"short_code":short_code})
             logger.info(f"Successfully executed delete for short_code: {short_code}")
             return True
         except Exception as e:

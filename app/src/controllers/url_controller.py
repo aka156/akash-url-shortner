@@ -43,8 +43,9 @@ def create_tiny_url( request: Request,payload: url_models.CreateUrlRequest, urls
 
     logger.info(f"Created new mapping: {short_url} for phone: {payload.phone_number}")
     return url_models.CreateUrlResponse(short_url=short_url) #parameters should be given in key value pairs
+            # "short_url": "http://127.0.0.1:8000/2ygsejy8" :- this is short url after we hit the endpoint
 
-#           return "falied to create short_url" #need to raise http exception with status code 500
+#     return "falied to create short_url" #need to raise http exception with status code 500
 #     return url_models.CreateUrlResponse(short_code)
 
 @router.get("/{short_code}")
@@ -53,22 +54,24 @@ def get_short_code(request: Request,short_code:str,url_service: UrlService = Dep
       if not original_url:
          logger.error("Failed to find original url.")
          raise HTTPException(status_code=404, detail="URL not found.")
-      return RedirectResponse(url=original_url, status_code=status.HTTP_307_SEE_OTHER)
+      return RedirectResponse(url=original_url, status_code=307)
 
 @router.get("/fetch/{short_code}")
 def fetch_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
-      logger.info(f"short_code :{short_code}")
+      #logger.info(f"short_code :{short_code}")
+      # short_code = short_code.strip("{}")
       original_url = url_service.get_original_url(short_code)
 
 
       if not original_url:
            logger.error("failed to find original url")
            raise HTTPException(status_code=404,detail="url not found")
-      return url_models.FetchUrlResponse(original_url) #return with models
+      return url_models.FetchUrlResponse(original_url=original_url) #return with models
       # return {"original_url": original_url} #return without models
 
 @router.delete("/delete/{short_code}")
 def delete_short_code(request: Request,short_code:str, url_service: UrlService = Depends(get_url_instance)):
+#      short_code = short_code.strip("{}")
      status = url_service.delete_short_url(short_code) # we are calling delete_short_url function from url_service by passing short_code as input
      if not status:
           logger.error("failed to delete short url")
