@@ -42,7 +42,7 @@ def create_tiny_url( request: Request,payload: url_models.CreateUrlRequest, urls
     short_url = f"{base_url}{short_code}"
 
     logger.info(f"Created new mapping: {short_url} for phone: {payload.phone_number}")
-    return url_models.CreateUrlResponse(short_code)
+    return url_models.CreateUrlResponse(short_url=short_url) #parameters should be given in key value pairs
 
 #           return "falied to create short_url" #need to raise http exception with status code 500
 #     return url_models.CreateUrlResponse(short_code)
@@ -57,7 +57,10 @@ def get_short_code(request: Request,short_code:str,url_service: UrlService = Dep
 
 @router.get("/fetch/{short_code}")
 def fetch_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
+      logger.info(f"short_code :{short_code}")
       original_url = url_service.get_original_url(short_code)
+
+
       if not original_url:
            logger.error("failed to find original url")
            raise HTTPException(status_code=404,detail="url not found")

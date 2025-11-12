@@ -14,8 +14,8 @@ class UrlService:
     def create_short_url(self, original_url:str,phone_number:str) -> Optional[str]:
         try:
             s=pyshorteners.Shortener()
-            short_url = s.tinyurl.short(original_url)
-            short_code = short_url.spilt('/')[-1]
+            short_url = s.tinyurl.short(str(original_url))
+            short_code = short_url.split('/')[-1]
         except Exception as e:
             logger.error(f"failed to generate short URL using pyshorteners: {e}",exc_info=True)
             return None
