@@ -22,7 +22,7 @@ ls
 
 #installing requirements and changing directory
 cd app
-
+source venv/bin/activate
 echo "Installing dependencies..."
 pip install -r requirements.txt
 echo "Done!"
