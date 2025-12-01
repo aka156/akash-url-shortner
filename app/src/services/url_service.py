@@ -11,6 +11,12 @@ class UrlService:
     def __init__(self,db_client:DynamoDBClient):
         self.db_client = db_client
 
+        '''The return type of the methods accessed through the Shortener instance, such as s.tinyurl.short(url), 
+           is typically a string (str), 
+           representing the shortened URL.
+           methods like expand() also return a string (str) representing the expanded URL.
+        '''
+
     def create_short_url(self, original_url:str,phone_number:str) -> Optional[str]:
         try:
             s=pyshorteners.Shortener()

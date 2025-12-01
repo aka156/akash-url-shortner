@@ -5,7 +5,7 @@ from src.models import url_models
 from src.database.dynamodb_client import DynamoDBClient
 from src.utils.settings import settings
 from fastapi.responses import RedirectResponse
-import logging
+import logging 
 
 
 router = APIRouter()
@@ -49,7 +49,7 @@ def create_tiny_url( request: Request,payload: url_models.CreateUrlRequest, urls
 #     return url_models.CreateUrlResponse(short_code)
 
 @router.get("/{short_code}")
-def get_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)):
+def get_short_code(request: Request,short_code:str,url_service: UrlService = Depends(get_url_instance)): #nstead of manually creating or passing UrlService every time, FastAPI injects it automatically.
       original_url = url_service.get_original_url(short_code)
       if not original_url:
          logger.error("Failed to find original url.")
