@@ -11,3 +11,11 @@ echo "Pulling latest changes..."
 git pull origin develop   # change 'main' to 'master' or another branch if needed
 
 echo "Done!"
+
+# printing present working directory
+
+pwd
+
+#listing 
+
+ls
