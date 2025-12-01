@@ -26,3 +26,7 @@ source venv/bin/activate
 echo "Installing dependencies..."
 pip install -r requirements.txt
 echo "Done!"
+
+#running uvicorn server
+
+uvicorn src.main:app --reload
