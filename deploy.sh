@@ -19,3 +19,10 @@ pwd
 #listing 
 
 ls
+
+#installing requirements and changing directory
+cd app
+
+echo "Installing dependencies..."
+pip install -r requirements.txt
+echo "Done!"
