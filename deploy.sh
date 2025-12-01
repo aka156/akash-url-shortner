@@ -27,6 +27,12 @@ echo "Installing dependencies..."
 pip install -r requirements.txt
 echo "Done!"
 
-#running uvicorn server
+#running uvicorn server 
 
-uvicorn src.main:app --reload
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+LOGFILE="start_logs/uvicorn_$TIMESTAMP.log"
+
+mkdir -p start_logs
+
+nohup uvicorn src.main:app --reload > "$LOGFILE" 2>&1 &
+echo "Uvicorn started in background. Logs: $LOGFILE"
