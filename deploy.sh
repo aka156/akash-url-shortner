@@ -38,7 +38,7 @@ echo "Done!"
 # nohup uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload > "$LOGFILE" 2>&1 & #2>&1 means: “send all error messages to the same place as standard output”
 # echo "Uvicorn started in background. Logs: $LOGFILE"
 
-TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
 
 STARTUP_LOG="start_logs/uvicorn_start_$TIMESTAMP.log"
 APP_LOG="api_logs/app_requests_$TIMESTAMP.log"
