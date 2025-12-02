@@ -30,10 +30,23 @@ echo "Done!"
 #running uvicorn server 
 
 
+# TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+# LOGFILE="start_logs/uvicorn_$TIMESTAMP.log" #creating a logfile to save the start logs with timestamp
+
+# mkdir -p start_logs
+
+# nohup uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload > "$LOGFILE" 2>&1 & #2>&1 means: “send all error messages to the same place as standard output”
+# echo "Uvicorn started in background. Logs: $LOGFILE"
+
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
-LOGFILE="start_logs/uvicorn_$TIMESTAMP.log" #creating a logfile to save the start logs with timestamp
 
-mkdir -p start_logs
+STARTUP_LOG="start_logs/uvicorn_start_$TIMESTAMP.log"
+APP_LOG="api_logs/app_requests_$TIMESTAMP.log"
 
-nohup uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload > "$LOGFILE" 2>&1 & #2>&1 means: “send all error messages to the same place as standard output”
-echo "Uvicorn started in background. Logs: $LOGFILE"
+mkdir -p start_logs api_logs
+
+# Run Uvicorn & pipe ONLY access logs to separate file
+nohup uvicorn src.main:app \
+    --host 0.0.0.0 --port 8000 --reload \
+    --access-log \
+    > "$STARTUP_LOG" 2>> "$APP_LOG" &
