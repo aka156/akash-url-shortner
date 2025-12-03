@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directory where your repo lives
-REPO_DIR="home/ubuntu/akash-url-shortner" 
+REPO_DIR="/home/ubuntu/akash-url-shortner" 
 
 # Move into the repo directory
 cd "$REPO_DIR" || { echo "Repo directory not found"; exit 1; }
@@ -37,3 +37,4 @@ mkdir -p start_logs
 
 nohup uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload > "$LOGFILE" 2>&1 &
 echo "Uvicorn started in background. Logs: $LOGFILE"
+
