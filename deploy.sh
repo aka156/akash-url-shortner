@@ -26,9 +26,24 @@ pwd
 ls
 
 #installing requirements and changing directory
-cd app
-python3 -m venv venv
-source venv/bin/activate
+# cd app
+# python3 -m venv venv
+# source venv/bin/activate
+
+if [[ "$VIRTUAL_ENV" != "" ]]; then
+    echo "Virtual environment already active: $VIRTUAL_ENV"
+else
+   if [[ -d "venv" ]]; then
+       echo "Activating existing virtual environment..."
+       source venv/bin/activate
+   else
+        echo "Virtual environment not found. Creating new one..."
+        python3 -m venv venv
+        source venv/bin/activate
+        NEW_VENV=true
+   fi
+fi    
+
 echo "Installing dependencies..."
 pip install -r requirements.txt
 echo "Done!"
