@@ -6,6 +6,11 @@ REPO_DIR="/home/ubuntu/akash-url-shortner"
 # Move into the repo directory
 cd "$REPO_DIR" || { echo "Repo directory not found"; exit 1; }
 
+#stopiing the server 
+echo "stopping the server"
+pkill -f uvicorn
+echo "server stopped"
+
 # Fetch and pull latest changes
 echo "Pulling latest changes..."
 git pull origin develop   # change 'main' to 'master' or another branch if needed
